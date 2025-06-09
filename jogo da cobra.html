@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cobra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            margin-top: 25px;
+            margin-bottom: 50px;
+        }
+
+        .canvas {
+            background-image: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+            background-color: #000;
+            display: block;
+            margin: 0 auto;
+            border: 5px solid green;
+        }
+
+        #painel-controle {
+            text-align: center;
+            margin-top: 25px;
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Jogo da Cobrinha</h1>
+
+    <canvas class="canvas" id="tela" height="400" width="400">Navegador não suporta o Canvas e HTML5</canvas>
+
+    <div id="painel-controle">
+        <label for="dificuldade">Dificuldade: </label>
+        <select id="dificuldade">
+            <option value="facil">Fácil</option>
+            <option value="medio" selected>Médio</option>
+            <option value="dificil">Difícil</option>
+        </select>
+        <button onclick="iniciarJogo()">Iniciar Jogo</button>
+        <p>Pontuação: <span id="pontuacao">0</span></p>
+    </div>
+
+    <audio id="somComida" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+    <audio id="somGameOver" src="https://www.soundjay.com/button/beep-10.wav" preload="auto"></audio>
+
+</body>
+
+<script>
+    const tela = document.getElementById("tela");
+    const contexto = tela.getContext("2d");
+    const tamanhoBloco = 20;
+    const totalBlocos = tela.width / tamanhoBloco;
+
+    const somComida = document.getElementById("somComida");
+    const somGameOver = document.getElementById("somGameOver");
+
+    function desenharCenario() {
+        contexto.fillStyle = "blue";
+        contexto.fillRect(0, 0, tela.width, tela.height);
+    }
+
+    let cobrinha = [{ x: 5, y: 5 }];
+
+    function desenharCobrinha() {
+        for (let parte of cobrinha) {
+            contexto.fillStyle = "lime";
+            contexto.fillRect(parte.x * tamanhoBloco, parte.y * tamanhoBloco, tamanhoBloco, tamanhoBloco);
+        }
+    }
+
+    let direcao = "direita";
+    document.addEventListener("keydown", function (evento) {
+        if (evento.key === "ArrowUp" && direcao !== "baixo") direcao = "cima";
+        if (evento.key === "ArrowDown" && direcao !== "cima") direcao = "baixo";
+        if (evento.key === "ArrowLeft" && direcao !== "direita") direcao = "esquerda";
+        if (evento.key === "ArrowRight" && direcao !== "esquerda") direcao = "direita";
+    });
+
+    function moverCobrinha() {
+        let cabeca = { ...cobrinha[0] };
+
+        if (direcao === "direita") cabeca.x++;
+        if (direcao === "esquerda") cabeca.x--;
+        if (direcao === "cima") cabeca.y--;
+        if (direcao === "baixo") cabeca.y++;
+
+        cobrinha.unshift(cabeca);
+        cobrinha.pop();
+    }
+
+    let intervaloJogo;
+
+    function iniciarJogo() {
+        cobrinha = [{ x: 5, y: 5 }];
+        direcao = "direita";
+        pontuacao = 0;
+        atualizarPontuacao();
+
+        let dificuldade = document.getElementById("dificuldade").value;
+        let velocidade;
+
+        switch (dificuldade) {
+            case "facil": velocidade = 200; break;
+            case "medio": velocidade = 120; break;
+            case "dificil": velocidade = 70; break;
+        }
+
+        clearInterval(intervaloJogo);
+        intervaloJogo = setInterval(() => {
+            desenharCenario();
+            moverCobrinha();
+            desenharCobrinha();
+            desenharComida();
+            verificarComida();
+            verificarColisoes();
+
+        }, velocidade);
+    }
+
+    let comida = gerarComida();
+    let pontuacao = 0;
+
+    function gerarComida() {
+        return {
+            x: Math.floor(Math.random() * totalBlocos),
+            y: Math.floor(Math.random() * totalBlocos)
+        };
+    }
+
+    function desenharComida() {
+        contexto.fillStyle = "red";
+        contexto.fillRect(comida.x * tamanhoBloco, comida.y * tamanhoBloco, tamanhoBloco, tamanhoBloco);
+    }
+
+    function verificarComida() {
+        if (cobrinha[0].x === comida.x && cobrinha[0].y === comida.y) {
+            comida = gerarComida();
+            cobrinha.push({});
+            pontuacao++;
+            somComida.play();
+            atualizarPontuacao();
+        }
+    }
+
+    function atualizarPontuacao() {
+        document.getElementById("pontuacao").innerText = pontuacao;
+    }
+
+    function verificarColisoes() {
+        let cabeca = cobrinha[0];
+
+        if (
+            cabeca.x < 0 || cabeca.x >= totalBlocos ||
+            cabeca.y < 0 || cabeca.y >= totalBlocos
+        ) {
+            gameOver();
+        }
+
+        for (let i = 1; i < cobrinha.length; i++) {
+            if (cabeca.x === cobrinha[i].x && cabeca.y === cobrinha[i].y) {
+                gameOver();
+            }
+        }
+    }
+
+    function gameOver() {
+        clearInterval(intervaloJogo);
+        somGameOver.play();
+        alert("Fim de jogo! Sua pontuação: " + pontuacao);
+    }
+</script>
+
+</html>
