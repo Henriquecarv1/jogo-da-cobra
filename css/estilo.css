@@ -1,0 +1,143 @@
+/* ====== FONTE E VARIÁVEIS ====== */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue:wght@400;700&display=swap');
+
+:root {
+    --preto-corinthians: #000000;
+    --branco: #FFFFFF;
+    --cinza: #AAAAAA;
+    --cinza-escuro: #222222;
+    --vermelho: #DA291C;
+    --translucido: rgba(255, 255, 255, 0.85);
+    --sombra: 0 4px 24px 0 #00000088, 0 0 0 6px #DA291C;
+    --radius: 18px;
+    --transicao: 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* ====== RESET ====== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    min-height: 100vh;
+    width: 100vw;
+    background: var(--preto-corinthians);
+    color: var(--branco);
+    font-family: 'Bebas Neue', Arial, sans-serif;
+    letter-spacing: 1px;
+    overflow-x: hidden;
+}
+
+/* ====== CENTRALIZAÇÃO DO LOGO E TÍTULO ====== */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    width: 100vw;
+    background: var(--preto-corinthians);
+}
+
+/* ====== LOGO CORINTHIANS ====== */
+#logo-palmeiras {
+    display: block;
+    margin: 48px auto 18px auto;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #000 70%, #DA291C 100%);
+    box-shadow: var(--sombra);
+    border: 4px solid var(--branco);
+    object-fit: contain;
+    transition: transform var(--transicao), box-shadow var(--transicao);
+}
+#logo-palmeiras:hover, #logo-palmeiras:focus {
+    transform: scale(1.08) rotate(-3deg);
+    box-shadow: 0 8px 32px 0 #DA291Ccc, 0 0 0 8px #000;
+    outline: 2px solid var(--cinza);
+}
+
+/* ====== TÍTULO CENTRALIZADO ====== */
+h1 {
+    color: var(--vermelho);
+    text-shadow: 2px 2px 0 var(--cinza-escuro);
+    font-size: 2.8rem;
+    text-align: center;
+    margin-bottom: 28px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.1;
+    display: block;
+}
+
+/* ====== ÁREA DO JOGO ====== */
+#container-jogo {
+    background: var(--cinza-escuro);
+    box-shadow: 0 8px 32px 0 #00000055;
+}
+
+/* ====== CANVAS (CAMPO DO JOGO) ====== */
+#tela {
+    background: repeating-linear-gradient(
+        0deg, var(--cinza-escuro) 0 20px, var(--preto-corinthians) 20px 40px
+    ), repeating-linear-gradient(
+        90deg, var(--cinza-escuro) 0 20px, var(--preto-corinthians) 20px 40px
+    );
+    border: 4px solid var(--vermelho);
+    box-shadow: 0 0 18px 0 var(--vermelho);
+}
+
+/* ====== PLACAR ====== */
+#hud-pontuacao, .placar {
+    background: var(--translucido);
+    border: 2px solid var(--vermelho);
+    color: var(--preto-corinthians);
+}
+#hud-pontuacao span, .placar span {
+    color: var(--vermelho);
+    text-shadow: 0 0 8px var(--cinza);
+}
+
+/* ====== PAINEL DE CONTROLE E BOTÕES ====== */
+#painel-controle {
+    background: var(--preto-corinthians);
+    border: 2px solid var(--vermelho);
+}
+#painel-controle label, #painel-controle select, #painel-controle p {
+    color: var(--branco);
+}
+#painel-controle button {
+    color: var(--vermelho);
+    border: 2px solid var(--vermelho);
+}
+#painel-controle button:hover, #painel-controle button:focus {
+    background: var(--cinza);
+    color: var(--preto-corinthians);
+    box-shadow: 0 0 12px 0 var(--cinza);
+}
+
+/* ====== COBRINHA E COMIDA ====== */
+.snake-segment {
+    background: var(--preto-corinthians);
+    border: 2px solid var(--branco);
+    box-shadow: 0 0 8px var(--vermelho);
+}
+.snake-head {
+    background: var(--preto-corinthians) url('/img/corinthians-logo.jpg') center/cover no-repeat;
+    border: 2px solid var(--vermelho);
+    box-shadow: 0 0 16px var(--vermelho);
+}
+.comida {
+    background: radial-gradient(circle at 60% 40%, #fff 0%, var(--vermelho) 80%);
+    border: 2px solid var(--vermelho);
+    box-shadow: 0 0 12px var(--vermelho);
+    animation: comida-brilho 1s infinite alternate;
+}
+@keyframes comida-brilho {
+    0% { box-shadow: 0 0 8px var(--vermelho); }
+    100% { box-shadow: 0 0 24px var(--vermelho); }
+}
