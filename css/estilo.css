@@ -108,7 +108,7 @@ h1 {
     border: 2px solid var(--vermelho);
 }
 #painel-controle label, #painel-controle select, #painel-controle p {
-    color: var(--branco);
+    color: var(--vermelho);
 }
 #painel-controle button {
     color: var(--vermelho);
